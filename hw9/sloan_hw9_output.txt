@@ -1,0 +1,433 @@
+Last login: Wed Apr 11 15:54:50 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw9
+joshs-mbp:hw9 Josh$ ls
+hw9j.ml			parser_base.ml
+hw9j_test.ml		record_parser.ml
+joshs-mbp:hw9 Josh$ ocaml
+        OCaml version 4.06.0
+
+# #use "hw9j_test.ml";;
+val update : 'a * 'b -> ('a -> 'b) -> 'a -> 'b = <fun>
+val map : ('a -> 'b) -> 'a list -> 'b list = <fun>
+val member : 'a -> 'a list -> bool = <fun>
+val disjoint : 'a list -> 'a list -> bool = <fun>
+type identifier = Id of string | XId of identifier * string
+val lastId : identifier -> string = <fun>
+val string_of_identifier : identifier -> string = <fun>
+type loc = Loc of int
+val string_of_loc : loc -> string = <fun>
+type expression =
+    Num of int
+  | Deref of identifier
+  | Plus of expression * expression
+  | Not of expression
+  | Eq of expression * expression
+  | Funcall of identifier
+val string_of_expression : expression -> string = <fun>
+type command =
+    Assign of identifier * expression
+  | Seq of command * command
+  | Ite of expression * command * command
+  | While of expression * command
+  | Skip
+  | Call of identifier
+val string_of_command : command -> string = <fun>
+type declaration =
+    Var of string * type_structure
+  | TClass of string * type_structure
+  | Const of string * expression
+  | Fun of string * expression
+  | Proc of string * command
+  | Comma of declaration * declaration
+  | Semi of declaration * declaration
+and type_structure = Newint | Record of declaration | X of identifier
+val string_of_declaration : declaration -> string = <fun>
+val string_of_type_structure : type_structure -> string = <fun>
+- : type_structure = Newint
+- : type_structure = Record (Var ("X", Newint))
+- : type_structure =
+Record (Semi (Var ("X", Newint), Fun ("f", Deref (Id "X"))))
+- : declaration =
+TClass ("R", Record (Semi (Var ("X", Newint), Fun ("f", Deref (Id "X")))))
+- : declaration =
+Semi
+ (TClass ("R", Record (Semi (Var ("X", Newint), Fun ("f", Deref (Id "X"))))),
+ Var ("x", X (Id "R")))
+type program = Prog of declaration * command
+type types =
+    Int
+  | Bool
+  | Intexp
+  | Boolexp
+  | Command
+  | Type of delta
+  | Class of delta
+and delta = Intloc | Pi of type_assignment
+and type_assignment = TA of (string * types) list
+val string_of_types : types -> string = <fun>
+val string_of_delta : delta -> string = <fun>
+val string_of_type_assignment : type_assignment -> string = <fun>
+val print_ta : type_assignment -> unit = <fun>
+exception TypeError of expression
+val update_ta : string * types -> type_assignment -> type_assignment = <fun>
+val lookup_ta : string -> type_assignment -> types = <fun>
+val names_of_type_assignment : type_assignment -> string list = <fun>
+val union_ta : type_assignment -> type_assignment -> type_assignment = <fun>
+val bar_union_ta : type_assignment -> type_assignment -> type_assignment =
+  <fun>
+val pi0 : type_assignment = TA []
+val type_of_identifier : identifier -> type_assignment -> types = <fun>
+val well_typed_identifier : identifier -> type_assignment -> bool = <fun>
+val well_typed_loc : identifier -> type_assignment -> bool = <fun>
+val expression_type : expression -> type_assignment -> types = <fun>
+val well_typed_expression : expression -> type_assignment -> bool = <fun>
+val declaration_type : declaration -> type_assignment -> type_assignment =
+  <fun>
+val type_structure_type : type_structure -> type_assignment -> types = <fun>
+val well_typed_declaration : declaration -> type_assignment -> bool = <fun>
+val well_typed_type_structure : type_structure -> type_assignment -> bool =
+  <fun>
+val well_typed_command : command -> type_assignment -> bool = <fun>
+val well_typed_program : program -> bool = <fun>
+type store = Store of (int * (loc -> int))
+val size : store -> int = <fun>
+val mem : store -> loc -> int = <fun>
+val lookup : loc * store -> int = <fun>
+val update_store : loc * int * store -> store = <fun>
+val allocate : store -> loc * store = <fun>
+val free : int -> store -> store = <fun>
+val s0 : store = Store (0, <fun>)
+val print_store_to : int -> store -> unit = <fun>
+val print_store : store -> unit = <fun>
+type env = {
+  int : string -> int;
+  bool : string -> bool;
+  intexp : string -> store -> int;
+  boolexp : string -> store -> bool;
+  command : string -> store -> store;
+  intloc : string -> loc;
+  pi : string -> env;
+  intloc_class : string -> store -> loc * store;
+  pi_class : string -> store -> env * store;
+}
+val update_int_env : string * int -> env -> env = <fun>
+val update_bool_env : string * bool -> env -> env = <fun>
+val update_intexp_env : string * (store -> int) -> env -> env = <fun>
+val update_boolexp_env : string * (store -> bool) -> env -> env = <fun>
+val update_command_env : string * (store -> store) -> env -> env = <fun>
+val update_intloc_env : string * loc -> env -> env = <fun>
+val update_pi_env : string * env -> env -> env = <fun>
+val update_intloc_class_env : string * (store -> loc * store) -> env -> env =
+  <fun>
+val update_pi_class_env : string * (store -> env * store) -> env -> env =
+  <fun>
+val union_env : env -> env -> env = <fun>
+val env0 : env =
+  {int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>;
+   command = <fun>; intloc = <fun>; pi = <fun>; intloc_class = <fun>;
+   pi_class = <fun>}
+val print_env : type_assignment -> env -> store -> unit = <fun>
+val meaning_of_loc : loc -> 'a -> loc = <fun>
+val get_lookup_env : identifier -> type_assignment -> env -> string -> env =
+  <fun>
+val meaning_of_int_id : identifier -> type_assignment -> env -> int = <fun>
+val meaning_of_bool_id : identifier -> type_assignment -> env -> bool = <fun>
+val meaning_of_intexp_id :
+  identifier -> type_assignment -> env -> store -> int = <fun>
+val meaning_of_boolexp_id :
+  identifier -> type_assignment -> env -> store -> bool = <fun>
+val meaning_of_command_id :
+  identifier -> type_assignment -> env -> store -> store = <fun>
+val meaning_of_intloc_id : identifier -> type_assignment -> env -> loc =
+  <fun>
+val meaning_of_pi_id : identifier -> type_assignment -> env -> env = <fun>
+val meaning_of_intloc_class_id :
+  identifier -> type_assignment -> env -> store -> loc * store = <fun>
+val meaning_of_pi_class_id :
+  identifier -> type_assignment -> env -> store -> env * store = <fun>
+val meaning_of_int_expression :
+  expression -> type_assignment -> env -> store -> int = <fun>
+val meaning_of_bool_expression :
+  expression -> type_assignment -> env -> store -> bool = <fun>
+val meaning_of_command : command -> type_assignment -> env -> store -> store =
+  <fun>
+val is_intloc_class : type_structure -> type_assignment -> bool = <fun>
+val is_pi_class : type_structure -> type_assignment -> bool = <fun>
+val replace_this_env_store_pair_with_code : env * store =
+  ({int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>;
+    command = <fun>; intloc = <fun>; pi = <fun>; intloc_class = <fun>;
+    pi_class = <fun>},
+   Store (0, <fun>))
+val meaning_of_declaration :
+  declaration -> type_assignment -> env -> store -> env * store = <fun>
+val meaning_of_newint :
+  type_structure -> type_assignment -> env -> store -> loc * store = <fun>
+val meaning_of_record :
+  type_structure -> type_assignment -> env -> store -> env * store = <fun>
+val meaning_of_program : program -> store -> store = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+val locationP : loc parser = P <fun>
+val symPeriod : string parser = P <fun>
+val build_XId : string list -> identifier = <fun>
+val identifierP : identifier parser = P <fun>
+- : (identifier * string) list =
+[(XId (XId (XId (Id "x", "y"), "z"), "w"), "x.x.x")]
+val symEq : string parser = P <fun>
+val symPlus : string parser = P <fun>
+val symAt : string parser = P <fun>
+val symNot : string parser = P <fun>
+val numP : expression parser = P <fun>
+val derefP : expression parser = P <fun>
+val funcallP : expression parser = P <fun>
+val notP : (unit -> expression parser) -> expression parser = <fun>
+val eqP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val plusP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val expressionP : expression parser = P <fun>
+val symSemi : string parser = P <fun>
+val symAssign : string parser = P <fun>
+val symIf : string parser = P <fun>
+val symThen : string parser = P <fun>
+val symElse : string parser = P <fun>
+val symFi : string parser = P <fun>
+val symWhile : string parser = P <fun>
+val symDo : string parser = P <fun>
+val symOd : string parser = P <fun>
+val symCall : string parser = P <fun>
+val assignP : command parser = P <fun>
+val ifthenelseP : (unit -> command parser) -> command parser = <fun>
+val whileP : (unit -> command parser) -> command parser = <fun>
+val skipP : command parser = P <fun>
+val callP : command parser = P <fun>
+val seqP :
+  (unit -> command parser) -> (unit -> command parser) -> command parser =
+  <fun>
+val commandP : command parser = P <fun>
+- : (command * string) list = [(Assign (Id "x", Num 10), "")]
+- : (command * string) list =
+[(Assign (XId (XId (Id "i", "x"), "y"),
+   Plus (Deref (XId (Id "i", "x")), Num 10)),
+  "")]
+val symComma : string parser = P <fun>
+val symVar : string parser = P <fun>
+val symFun : string parser = P <fun>
+val symProc : string parser = P <fun>
+val symClass : string parser = P <fun>
+val symConst : string parser = P <fun>
+val symNewint : string parser = P <fun>
+val symRecord : string parser = P <fun>
+val symColon : string parser = P <fun>
+val symLSB : string parser = P <fun>
+val symRSB : string parser = P <fun>
+val semiP :
+  (unit -> declaration parser) ->
+  (unit -> declaration parser) -> declaration parser = <fun>
+val commaP :
+  (unit -> declaration parser) ->
+  (unit -> declaration parser) -> declaration parser = <fun>
+val varP : (unit -> type_structure parser) -> declaration parser = <fun>
+val funP : declaration parser = P <fun>
+val procP : declaration parser = P <fun>
+val classP : (unit -> type_structure parser) -> declaration parser = <fun>
+val constP : declaration parser = P <fun>
+val recordP : (unit -> declaration parser) -> type_structure parser = <fun>
+val newintP : type_structure parser = P <fun>
+val idStructP : type_structure parser = P <fun>
+val declarationP : declaration parser = P <fun>
+val type_structureP : type_structure parser = P <fun>
+val symIn : string parser = P <fun>
+val programP : program parser = P <fun>
+val view : string -> program = <fun>
+val testp : string -> unit = <fun>
+val test_decl : string -> unit = <fun>
+
+ decl = Semi(TClass(M, Record(TClass(N, Newint))), Semi(Var(X, M), Var(i, X.N)))
+ pi = {i:intloc, X:[N: class intloc], M:class [N: class intloc]}
+ env = {i:intloc Loc1, X:rec{N:Newint}, M:class {N:Newint}}- : unit = ()
+
+ decl = TClass(P, Record(TClass(Q, Newint)))
+ pi = {P:class [Q: class intloc]}
+ env = {P:class {Q:Newint}}- : unit = ()
+
+ decl = TClass(P, Record(Var(x, Newint)))
+ pi = {P:class [x: intloc]}
+ env = {P:class {x:Newint}}- : unit = ()
+
+ decl = Semi(TClass(M, Record(Semi(TClass(N, Record(Var(y, Newint))), Var(x, N)))), Var(z, M))
+ pi = {z:[x: [y: intloc]; N: class [y: intloc]], M:class [x: [y: intloc]; N: class [y: intloc]]}
+ env = {z:rec{x:rec{y:intloc Loc1}, N:class {y:Newint}}, M:class {x:rec{y:intloc Loc2}, N:class {y:Newint}}}- : unit = ()
+
+ prog = var A : newint; class R = record {var B : newint; proc P = A := @A + @B}; var r1 : R  in r1.B := 1; A := 2; call r1.P
+ pi = {r1:[P: comm; B: intloc], R:class [P: comm; B: intloc], A:intloc}
+ env = {r1:rec{P:comm <Loc1:0, Loc2:0>
+, B:intloc Loc2}, R:class {P:comm <Loc1:0, Loc2:0, Loc3:0>
+, B:Newint}, A:intloc Loc1}
+ store = <Loc1:3, Loc2:1>
+- : unit = ()
+
+ prog = var I:newint in I:= 1
+ pi = {I:intloc}
+ env = {I:intloc Loc1}
+ store = <Loc1:1>
+- : unit = ()
+
+ prog = var I:newint in I:=@I+1; I:= @I + @I
+ pi = {I:intloc}
+ env = {I:intloc Loc1}
+ store = <Loc1:2>
+- : unit = ()
+
+ prog = class M = newint; var i:M in while ~(@i = 0) do i := @i +(-1) od
+ pi = {i:intloc, M:class intloc}
+ env = {i:intloc Loc1, M:Newint}
+ store = <Loc1:0>
+- : unit = ()
+
+ prog = class M = newint; var i:M in i:= 10; while ~(@i = 0) do i := @i +(-1) od
+ pi = {i:intloc, M:class intloc}
+ env = {i:intloc Loc1, M:Newint}
+ store = <Loc1:0>
+- : unit = ()
+
+ prog = class M =  record {var x:newint}; var i:M in i.x := 10
+ pi = {i:[x: intloc], M:class [x: intloc]}
+ env = {i:rec{x:intloc Loc1}, M:class {x:Newint}}
+ store = <Loc1:10>
+- : unit = ()
+
+ prog = class M =  record {var x:newint}; var i:M; var j:newint ; var ans : newint in i.x := 10; j:= 100; while ~(@i.x = 0) do i.x := @i.x +(-1); ans := @ans + @j   od
+ pi = {ans:intloc, j:intloc, i:[x: intloc], M:class [x: intloc]}
+ env = {ans:intloc Loc3, j:intloc Loc2, i:rec{x:intloc Loc1}, M:class {x:Newint}}
+ store = <Loc1:0, Loc2:100, Loc3:1000>
+- : unit = ()
+
+ prog = class M = record {var x:newint; var y:newint}; var i:M in i.x := 10; i.y := 20; i.x := @i.y + @i.x
+ pi = {i:[y: intloc; x: intloc], M:class [y: intloc; x: intloc]}
+ env = {i:rec{y:intloc Loc2, x:intloc Loc1}, M:class {y:Newint, x:Newint}}
+ store = <Loc1:30, Loc2:20>
+- : unit = ()
+
+ prog = class M = record {var x:newint; var y:newint}; var i:M in i.x := 10 ; i.y := 11; if ~(@i.y = 10) then i.x := @i.x + @i.y else i.y := @i.x + 5 fi
+ pi = {i:[y: intloc; x: intloc], M:class [y: intloc; x: intloc]}
+ env = {i:rec{y:intloc Loc2, x:intloc Loc1}, M:class {y:Newint, x:Newint}}
+ store = <Loc1:21, Loc2:11>
+- : unit = ()
+
+ prog = class M = record {var x:newint; var y:newint}; var i:M in i.x := 10 ; i.y := @i.x; if ~(@i.y = 10) then i.x := @i.x + @i.y else i.y := @i.x + 5 fi
+ pi = {i:[y: intloc; x: intloc], M:class [y: intloc; x: intloc]}
+ env = {i:rec{y:intloc Loc2, x:intloc Loc1}, M:class {y:Newint, x:Newint}}
+ store = <Loc1:10, Loc2:15>
+- : unit = ()
+
+ prog = class M = record {var x:newint; var y:newint}; var i:M in i.x := 10; i.y := 0; while ~(@i.x = 0) do i.y := @i.y + @i.x; i.x := @i.x + (-1) od
+ pi = {i:[y: intloc; x: intloc], M:class [y: intloc; x: intloc]}
+ env = {i:rec{y:intloc Loc2, x:intloc Loc1}, M:class {y:Newint, x:Newint}}
+ store = <Loc1:0, Loc2:55>
+- : unit = ()
+
+ prog = class M =  record {var x:newint}; var i : M; var j :M in i.x := @i.x + (-1); j.x := 21
+ pi = {j:[x: intloc], i:[x: intloc], M:class [x: intloc]}
+ env = {j:rec{x:intloc Loc2}, i:rec{x:intloc Loc1}, M:class {x:Newint}}
+ store = <Loc1:-1, Loc2:21>
+- : unit = ()
+
+ prog = class M =  record {var x:  record {var y:newint}}; var i : M in i.x.y := 10 
+ pi = {i:[x: [y: intloc]], M:class [x: [y: intloc]]}
+ env = {i:rec{x:rec{y:intloc Loc1}}, M:class {x:rec{y:intloc Loc2}}}
+ store = <Loc1:10>
+- : unit = ()
+
+ prog = class M =  record {var x:  record {var y:newint}}; var i : M in i.x.y := 10 ; i.x.y := @i.x.y + @i.x.y
+ pi = {i:[x: [y: intloc]], M:class [x: [y: intloc]]}
+ env = {i:rec{x:rec{y:intloc Loc1}}, M:class {x:rec{y:intloc Loc2}}}
+ store = <Loc1:20>
+- : unit = ()
+
+ prog = class N =  record {var y:newint}; class M =  record {var x: N}; var i : M in i.x.y := 10 ; i.x.y := @i.x.y + @i.x.y
+ pi = {i:[x: [y: intloc]], M:class [x: [y: intloc]], N:class [y: intloc]}
+ env = {i:rec{x:rec{y:intloc Loc1}}, M:class {x:rec{y:intloc Loc2}}, N:class {y:Newint}}
+ store = <Loc1:20>
+- : unit = ()
+
+ prog = class M =  record {var x:  record {var y:newint}}; var i : M in i.x.y := 10 ; i.x.y := @i.x.y + @i.x.y
+ pi = {i:[x: [y: intloc]], M:class [x: [y: intloc]]}
+ env = {i:rec{x:rec{y:intloc Loc1}}, M:class {x:rec{y:intloc Loc2}}}
+ store = <Loc1:20>
+- : unit = ()
+
+ prog = class M =  record {class N =  record {var y:newint};var x: N}; var i : M in i.x.y := 10 ; i.x.y := @i.x.y + @i.x.y
+ pi = {i:[x: [y: intloc]; N: class [y: intloc]], M:class [x: [y: intloc]; N: class [y: intloc]]}
+ env = {i:rec{x:rec{y:intloc Loc1}, N:class {y:Newint}}, M:class {x:rec{y:intloc Loc2}, N:class {y:Newint}}}
+ store = <Loc1:20>
+- : unit = ()
+
+ prog = class M =  record {class N =  record {var y:newint};var x: N; var z: N}; var i : M in i.x.y := 10 ; i.z.y:= 100; i.x.y := @i.x.y + @i.z.y
+ pi = {i:[z: [y: intloc]; x: [y: intloc]; N: class [y: intloc]], M:class [z: [y: intloc]; x: [y: intloc]; N: class [y: intloc]]}
+ env = {i:rec{z:rec{y:intloc Loc2}, x:rec{y:intloc Loc1}, N:class {y:Newint}}, M:class {z:rec{y:intloc Loc4}, x:rec{y:intloc Loc3}, N:class {y:Newint}}}
+ store = <Loc1:110, Loc2:100>
+- : unit = ()
+
+ prog = const True = (0=0); var x: newint in if True then x := 1 else x := 0 fi
+ pi = {x:intloc, True:boolexp}
+ env = {x:intloc Loc1, True:boolexp true}
+ store = <Loc1:1>
+- : unit = ()
+
+ prog = const False = (0=1); var x: newint in if False then x := 1 else x := (-1) fi
+ pi = {x:intloc, False:boolexp}
+ env = {x:intloc Loc1, False:boolexp false}
+ store = <Loc1:-1>
+- : unit = ()
+# 
