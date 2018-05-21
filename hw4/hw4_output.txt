@@ -1,0 +1,25 @@
+//Josh Sloan
+//hw4 output from Terminal
+
+Last login: Sun Feb 25 15:36:27 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw4
+joshs-mbp:hw4 Josh$ ocaml "debruijn.ml"
+Abs (x,Var x)
+(lambda 1)
+
+Abs (y,Var y)
+(lambda 1)
+
+Abs (y,Var x)
+(lambda x)
+
+Abs (x, Ap(Abs (x,Var x), Abs (y, Ap (Var x, Var y))))
+(lambda ((lambda 1) (lambda (2 1))))
+
+Abs (x,Var x) alphaEQ to Abs (y,Var y)?
+true
+
+Abs (x, Ap(Abs (x,Var x), Abs (y, Ap (Var x, Var y)))) alphaEQ to Abs (y,Var x)?
+false
+
+joshs-mbp:hw4 Josh$ 
