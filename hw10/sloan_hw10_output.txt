@@ -1,0 +1,261 @@
+Last login: Wed Apr 18 21:35:35 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw10
+joshs-mbp:hw10 Josh$ ls
+hw10j.ml	hw10j_test.ml	parser_base.ml	parser_ch3.ml
+joshs-mbp:hw10 Josh$ ocaml
+        OCaml version 4.06.0
+
+# #use "hw10j_test.ml";;
+val update_fn : 'a * 'b -> ('a -> 'b) -> 'a -> 'b = <fun>
+val map : ('a -> 'b) -> 'a list -> 'b list = <fun>
+val member : 'a -> 'a list -> bool = <fun>
+val disjoint : 'a list -> 'a list -> bool = <fun>
+val disjoint_union : 'a list -> 'a list -> 'a list = <fun>
+val remove_all : 'a -> 'a list -> 'a list = <fun>
+val unique : 'a list -> 'a list = <fun>
+type address = Address of int
+val string_of_address : address -> string = <fun>
+type loc = I of string
+val string_of_loc : loc -> string = <fun>
+type expression =
+    Num of int
+  | Deref of loc
+  | Plus of expression * expression
+  | Not of expression
+  | Eq of expression * expression
+  | Id of string
+val string_of_expression : expression -> string = <fun>
+type expression_types = Int | Bool
+val string_of_expression_types : expression_types -> string = <fun>
+type types =
+    TauExp of expression_types
+  | Intloc
+  | Comm
+  | Arrow of types * types
+val string_of_types : types -> string = <fun>
+type command =
+    Assign of loc * expression
+  | Seq of command * command
+  | Ite of expression * command * command
+  | While of expression * command
+  | Skip
+  | Call of string * expression
+val string_of_command : command -> string = <fun>
+type declaration =
+    Var of string
+  | Fun of string * expression
+  | Proc of string * string * types * command
+  | Comma of declaration * declaration
+  | Semi of declaration * declaration
+val string_of_declaration : declaration -> string = <fun>
+type program = Prog of declaration * command
+val declaration_of_program : program -> declaration = <fun>
+val command_of_program : program -> command = <fun>
+exception TypeError of expression
+type type_assignment = TA of (string * types) list
+val update_ta : string * types -> type_assignment -> type_assignment = <fun>
+val type_of_id : type_assignment -> string -> types = <fun>
+val is_id : string -> type_assignment -> bool = <fun>
+val names_of_type_assignment : type_assignment -> string list = <fun>
+val union_ta : type_assignment -> type_assignment -> type_assignment = <fun>
+val bar_union_ta : type_assignment -> type_assignment -> type_assignment =
+  <fun>
+val pi0 : type_assignment = TA []
+val print_ta : type_assignment -> unit = <fun>
+val well_typed_loc : loc -> type_assignment -> bool = <fun>
+val expression_type : expression -> type_assignment -> expression_types =
+  <fun>
+val well_typed_expression : expression -> type_assignment -> bool = <fun>
+val well_typed_command : command -> type_assignment -> bool = <fun>
+val declaration_type : declaration -> type_assignment -> type_assignment =
+  <fun>
+val well_typed_declaration : declaration -> type_assignment -> bool = <fun>
+type store = Store of (int * (address -> int))
+val new_store : int -> int -> store = <fun>
+val size : store -> int = <fun>
+val mem : store -> address -> int = <fun>
+val lookup : address * store -> int = <fun>
+val update : address * int * store -> store = <fun>
+val allocate : store -> address * store = <fun>
+val free : int -> store -> store = <fun>
+val print_store : store -> unit = <fun>
+val s0 : store = Store (0, <fun>)
+val print_store : store -> unit = <fun>
+type env = {
+  int : string -> int;
+  bool : string -> bool;
+  intexp : string -> store -> int;
+  boolexp : string -> store -> bool;
+  command : string -> store -> store;
+  intloc : string -> address;
+  proc_int : string -> (store -> int) -> store -> store;
+  proc_bool : string -> (store -> bool) -> store -> store;
+}
+val update_int_env : string * int -> env -> env = <fun>
+val update_bool_env : string * bool -> env -> env = <fun>
+val update_intexp_env : string * (store -> int) -> env -> env = <fun>
+val update_boolexp_env : string * (store -> bool) -> env -> env = <fun>
+val update_command_env : string * (store -> store) -> env -> env = <fun>
+val update_intloc_env : string * address -> env -> env = <fun>
+val update_proc_int_env :
+  string * ((store -> int) -> store -> store) -> env -> env = <fun>
+val update_proc_bool_env :
+  string * ((store -> bool) -> store -> store) -> env -> env = <fun>
+val union_env : env -> env -> env = <fun>
+val env0 : env =
+  {int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>;
+   command = <fun>; intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+val print_env : type_assignment -> env -> store -> unit = <fun>
+val meaning_of_address : loc -> loc = <fun>
+val meaning_of_loc : loc -> env -> address = <fun>
+val meaning_of_int_expression :
+  expression -> type_assignment -> env -> store -> int = <fun>
+val meaning_of_bool_expression :
+  expression -> type_assignment -> env -> store -> bool = <fun>
+val meaning_of_command : command -> type_assignment -> env -> store -> store =
+  <fun>
+val meaning_of_declaration :
+  declaration -> type_assignment -> env -> store -> env * store = <fun>
+val meaning_of_program : program -> store -> store = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+val symI : string parser = P <fun>
+val locationP : loc parser = P <fun>
+val expression_typesP : expression_types parser = P <fun>
+val symArrow : string parser = P <fun>
+val intlocP : types parser = P <fun>
+val commP : types parser = P <fun>
+val arrowP : (unit -> types parser) -> types -> types parser = <fun>
+val texpP : types parser = P <fun>
+val typesP : types parser = P <fun>
+val symEq : string parser = P <fun>
+val symPlus : string parser = P <fun>
+val symAt : string parser = P <fun>
+val symNot : string parser = P <fun>
+val numP : expression parser = P <fun>
+val derefP : expression parser = P <fun>
+val funcallP : expression parser = P <fun>
+val notP : (unit -> expression parser) -> expression parser = <fun>
+val eqP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val plusP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val expressionP : expression parser = P <fun>
+val symSemi : string parser = P <fun>
+val symAssign : string parser = P <fun>
+val symIf : string parser = P <fun>
+val symThen : string parser = P <fun>
+val symElse : string parser = P <fun>
+val symFi : string parser = P <fun>
+val symWhile : string parser = P <fun>
+val symDo : string parser = P <fun>
+val symOd : string parser = P <fun>
+val symCall : string parser = P <fun>
+val symLParen : string parser = P <fun>
+val symRParen : string parser = P <fun>
+val symColon : string parser = P <fun>
+val assignP : command parser = P <fun>
+val ifthenelseP : (unit -> command parser) -> command parser = <fun>
+val whileP : (unit -> command parser) -> command parser = <fun>
+val skipP : command parser = P <fun>
+val callP : command parser = P <fun>
+val seqP :
+  (unit -> command parser) -> (unit -> command parser) -> command parser =
+  <fun>
+val commandP : command parser = P <fun>
+val symComma : string parser = P <fun>
+val symVar : string parser = P <fun>
+val symFun : string parser = P <fun>
+val symProc : string parser = P <fun>
+val semiP :
+  (unit -> declaration parser) ->
+  (unit -> declaration parser) -> declaration parser = <fun>
+val commaP :
+  (unit -> declaration parser) ->
+  (unit -> declaration parser) -> declaration parser = <fun>
+val varP : declaration parser = P <fun>
+val funP : declaration parser = P <fun>
+val procP : declaration parser = P <fun>
+val declarationP : declaration parser = P <fun>
+val symIn : string parser = P <fun>
+val programP : program parser = P <fun>
+val test_mod : string -> env = <fun>
+val test_mop : string -> unit = <fun>
+{x:Intloc}{x:Address 1}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+{x:Intloc, y:Intloc}{x:Address 1, y:Address 2}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+{y:Intloc, x:Intloc}{y:Address 1, x:Address 2}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+{x:Intloc, y:Intloc, double:(TauExp Int -> Comm)}{x:Address 1, y:Address 2, double:<fun>}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+{x:Intloc, y:Intloc, add:(TauExp Int -> Comm), double:(TauExp Int -> Comm)}{x:Address 1, y:Address 2, add:<fun>, double:<fun>}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+
+ Address1: 12
+ Address2: 6- : unit = ()
+{A:Intloc, M:(TauExp Int -> Comm)}{A:Address 1, M:<fun>}- : env =
+{int = <fun>; bool = <fun>; intexp = <fun>; boolexp = <fun>; command = <fun>;
+ intloc = <fun>; proc_int = <fun>; proc_bool = <fun>}
+
+ Address1: 4- : unit = ()
+
+ Address1: 1- : unit = ()
+
+ Address1: 2- : unit = ()
+# 
