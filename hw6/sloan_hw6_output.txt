@@ -1,0 +1,334 @@
+Last login: Sun Mar 25 15:06:08 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw6
+joshs-mbp:hw6 Josh$ ocaml hw6i.ml
+joshs-mbp:hw6 Josh$ ocaml
+        OCaml version 4.06.0
+
+# #use "hw6i_test.ml";;
+val update_fn : 'a * 'b -> ('a -> 'b) -> 'a -> 'b = <fun>
+type loc = Loc of int
+val string_of_loc : loc -> string = <fun>
+type expression =
+    Num of int
+  | Deref of loc
+  | Plus of expression * expression
+  | Not of expression
+  | Eq of expression * expression
+  | AssignE of loc * expression
+val string_of_expression : expression -> string = <fun>
+type command =
+    Assign of loc * expression
+  | Seq of command * command
+  | Ite of expression * command * command
+  | While of expression * command
+  | Skip
+val string_of_command : command -> string = <fun>
+type expression_types = Boolexp | Intexp
+exception TypeError of expression
+val well_typed_loc : loc -> bool = <fun>
+val expression_type : expression -> expression_types = <fun>
+val well_typed_int_exp : expression -> bool = <fun>
+val well_typed_bool_exp : expression -> bool = <fun>
+val well_typed_command : command -> bool = <fun>
+type store = Store of (int * (loc -> int))
+val new_store : int -> int -> store = <fun>
+val size : store -> int = <fun>
+val mem : store -> loc -> int = <fun>
+val lookup : loc * store -> int = <fun>
+val update : loc * int * store -> store = <fun>
+val print_store : store -> unit = <fun>
+val meaning_of_loc : loc -> loc = <fun>
+val meaning_of_int_expression : expression -> store -> int * store = <fun>
+val meaning_of_bool_expression : expression -> store -> bool * store = <fun>
+val meaning_of_command : command -> store -> store = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+val locationP : loc parser = P <fun>
+val symEq : string parser = P <fun>
+val symPlus : string parser = P <fun>
+val symAt : string parser = P <fun>
+val symNot : string parser = P <fun>
+val symAss : string parser = P <fun>
+val numP : expression parser = P <fun>
+val derefP : expression parser = P <fun>
+val notP : (unit -> expression parser) -> expression parser = <fun>
+val eqP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val plusP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val assignEP : (unit -> expression parser) -> expression parser = <fun>
+val expressionP : expression parser = P <fun>
+val symSemi : string parser = P <fun>
+val symAssign : string parser = P <fun>
+val symIf : string parser = P <fun>
+val symThen : string parser = P <fun>
+val symElse : string parser = P <fun>
+val symFi : string parser = P <fun>
+val symWhile : string parser = P <fun>
+val symDo : string parser = P <fun>
+val symOd : string parser = P <fun>
+val symCall : string parser = P <fun>
+val assignP : command parser = P <fun>
+val ifthenelseP : (unit -> command parser) -> command parser = <fun>
+val whileP : (unit -> command parser) -> command parser = <fun>
+val skipP : command parser = P <fun>
+val seqP :
+  (unit -> command parser) -> (unit -> command parser) -> command parser =
+  <fun>
+val commandP : command parser = P <fun>
+val test_exp : string -> store -> unit = <fun>
+val test_comm : string -> store -> unit = <fun>
+val s0 : store = Store (4, <fun>)
+val si : store = Store (4, <fun>)
+initial store:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+AssignE (Loc 1, Plus (Num 10, Num 10)) evaluates to 10
+final store:
+Loc1: 10
+Loc2: 0
+Loc3: 0
+Loc4: 0
+- : unit = ()
+initial store:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+Plus (AssignE (Loc 1, Num 2), AssignE (Loc 1, Num 2)) evaluates to 5
+final store:
+Loc1: 3
+Loc2: 0
+Loc3: 0
+Loc4: 0
+- : unit = ()
+initial store:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+Plus (AssignE (Loc 1, Num 3), AssignE (Loc 1, Num 3)) evaluates to 5
+final store:
+Loc1: 2
+Loc2: 0
+Loc3: 0
+Loc4: 0
+- : unit = ()
+initial store:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+Eq  (Deref Loc 2, Deref Loc 2) evaluates to false
+final store:
+Loc1: 1
+Loc2: 3
+Loc3: 3
+Loc4: 4
+- : unit = ()
+initial store:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+Eq  (AssignE (Loc 2, Num 3), AssignE (Loc 2, Num 3)) evaluates to true
+final store:
+Loc1: 1
+Loc2: 3
+Loc3: 3
+Loc4: 4
+- : unit = ()
+initial store:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+AssignE (Loc 2, AssignE (Loc 3, Deref Loc 1)) evaluates to 1
+final store:
+Loc1: 1
+Loc2: 1
+Loc3: 1
+Loc4: 4
+- : unit = ()
+loc1 := (loc1 <- 10) + @loc1  maps:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+to :
+Loc1: 10
+Loc2: 0
+Loc3: 0
+Loc4: 0
+- : unit = ()
+loc1 := @loc1 + (loc1 <- 10)  maps:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+to :
+Loc1: 10
+Loc2: 0
+Loc3: 0
+Loc4: 0
+- : unit = ()
+while (~ (10 = (loc1 <- (@loc1+1)))) do loc2 := @loc1 + @loc1 od  maps:
+Loc1: 0
+Loc2: 0
+Loc3: 0
+Loc4: 0
+to :
+Loc1: 10
+Loc2: 18
+Loc3: 0
+Loc4: 0
+- : unit = ()
+if (@loc3 = (loc1<- 3)) then loc4 := @loc1 + (loc1 <- (-1)) else skip fi   maps:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+to :
+Loc1: -1
+Loc2: 2
+Loc3: 3
+Loc4: 2
+- : unit = ()
+if (@loc3 = (loc1<- 3)) then loc4 := @loc1 + (loc1 <- 1) else skip fi   maps:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+to :
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+- : unit = ()
+loc3 := @loc1; loc1 := @loc2; loc2 := @loc3  maps:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+to :
+Loc1: 2
+Loc2: 1
+Loc3: 1
+Loc4: 4
+- : unit = ()
+if ((loc3 <- @loc1) = @loc3) then loc1 := @loc2; loc2 := @loc3 else skip fi  maps:
+Loc1: 1
+Loc2: 2
+Loc3: 3
+Loc4: 4
+to :
+Loc1: 2
+Loc2: 1
+Loc3: 1
+Loc4: 4
+- : unit = ()
+# 
