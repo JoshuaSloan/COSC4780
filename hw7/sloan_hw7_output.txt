@@ -1,0 +1,201 @@
+Last login: Wed Mar 28 15:45:37 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw7
+joshs-mbp:hw7 Josh$ ls
+hw6j.ml			hw6j_test.ml		parser_ch1.ml
+hw6j_expected.txt	parser_base.ml
+joshs-mbp:hw7 Josh$ ocaml
+        OCaml version 4.06.0
+
+# #use "hw6j_test.ml";;
+val list_intersection : 'a list -> 'a list -> 'a list = <fun>
+type loc = Loc of int
+val string_of_loc : loc -> string = <fun>
+type expression =
+    N of int
+  | Deref of loc
+  | Add of expression * expression
+  | Neg of expression
+  | Eq of expression * expression
+val string_of_expression : expression -> string = <fun>
+type command =
+    Assign of loc * expression
+  | Seq of command * command
+  | If of expression * command * command
+  | While of expression * command
+  | Skip
+val string_of_command : command -> string = <fun>
+type report = Good | Possible of command list
+val union_reports : report -> report -> report = <fun>
+val exp_refs : expression -> loc list = <fun>
+val active_locs : command -> loc list = <fun>
+val loops_analysis : command -> report = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+val locationP : loc parser = P <fun>
+val symEq : string parser = P <fun>
+val symPlus : string parser = P <fun>
+val symAt : string parser = P <fun>
+val symNot : string parser = P <fun>
+val numP : expression parser = P <fun>
+val derefP : expression parser = P <fun>
+val notP : (unit -> expression parser) -> expression parser = <fun>
+val eqP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val plusP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val expressionP : expression parser = P <fun>
+val symSemi : string parser = P <fun>
+val symAssign : string parser = P <fun>
+val symIf : string parser = P <fun>
+val symThen : string parser = P <fun>
+val symElse : string parser = P <fun>
+val symFi : string parser = P <fun>
+val symWhile : string parser = P <fun>
+val symDo : string parser = P <fun>
+val symOd : string parser = P <fun>
+val symCall : string parser = P <fun>
+val assignP : command parser = P <fun>
+val ifthenelseP : (unit -> command parser) -> command parser = <fun>
+val whileP : (unit -> command parser) -> command parser = <fun>
+val skipP : command parser = P <fun>
+val seqP :
+  (unit -> command parser) -> (unit -> command parser) -> command parser =
+  <fun>
+val commandP : command parser = P <fun>
+val test : (command -> 'a) -> string -> 'a = <fun>
+val test_exp_refs : string -> loc list = <fun>
+- : loc list = [Loc 2]
+- : loc list = []
+- : loc list = [Loc 1; Loc 2]
+- : loc list = [Loc 1; Loc 2]
+- : loc list = [Loc 3; Loc 1]
+- : loc list = [Loc 3; Loc 1]
+- : loc list = [Loc 3]
+- : loc list = [Loc 1]
+- : loc list = [Loc 1]
+- : loc list = [Loc 1; Loc 1]
+- : loc list = [Loc 1; Loc 1; Loc 2]
+- : loc list = [Loc 3; Loc 4]
+- : report = Good
+- : report = Good
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)));
+  While (Eq (Deref (Loc 2), N 1), Assign (Loc 1, N 1))]
+- : report = Good
+- : report = Good
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+# 

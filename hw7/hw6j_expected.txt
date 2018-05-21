@@ -1,0 +1,196 @@
+# #use "parser_base.ml";;
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+# #use "parser_ch1.ml";;
+type 'a parser = P of (string -> ('a * string) list)
+val parse : 'a parser -> string -> ('a * string) list = <fun>
+val analyze : 'a parser -> string -> 'a = <fun>
+val return : 'a -> 'a parser = <fun>
+val bind : 'a parser -> ('a -> 'b parser) -> 'b parser = <fun>
+val bind' : 'a parser -> 'b parser -> 'b parser = <fun>
+val mzero : 'a parser = P <fun>
+val mplus : 'a parser -> 'a parser -> 'a parser = <fun>
+val failure : 'a parser = P <fun>
+val char2str : char -> string = <fun>
+val shead : string -> char = <fun>
+val rest : string -> string = <fun>
+val item : char parser = P <fun>
+val choice : 'a parser -> 'a parser -> 'a parser = <fun>
+val choices : 'a parser list -> 'a parser = <fun>
+val chainl1 : 'a parser -> ('a -> 'a -> 'a) parser -> 'a parser = <fun>
+val chainl : 'a parser -> ('a -> 'a -> 'a) parser -> 'a -> 'a parser = <fun>
+val sat : (char -> bool) -> char parser = <fun>
+val orP : ('a -> bool) -> ('a -> bool) -> 'a -> bool = <fun>
+val isDigit : char -> bool = <fun>
+val isLower : char -> bool = <fun>
+val isUpper : char -> bool = <fun>
+val isAlpha : char -> bool = <fun>
+val isSpace : char -> bool = <fun>
+val isWhiteSpace : char -> bool = <fun>
+val digit : char parser = P <fun>
+val lower : char parser = P <fun>
+val upper : char parser = P <fun>
+val letter : char parser = P <fun>
+val char : char -> char parser = <fun>
+val alphanum : char parser = P <fun>
+val string : string -> string parser = <fun>
+val many1 : char parser -> string parser = <fun>
+val many : char parser -> string parser = <fun>
+val list1P : 'a parser -> 'a list parser = <fun>
+val listP : 'a parser -> 'a list parser = <fun>
+val lowerIdent : string parser = P <fun>
+val upperIdent : string parser = P <fun>
+val ident : string parser = P <fun>
+val nat : int parser = P <fun>
+val int : int parser = P <fun>
+val space : unit parser = P <fun>
+val whiteSpace : unit parser = P <fun>
+val token : 'a parser -> 'a parser = <fun>
+val prefix : string -> unit parser = <fun>
+val delimted_by : char -> string parser = <fun>
+val tokenized_delimted_by : char -> string parser = <fun>
+val identifier : string parser = P <fun>
+val natural : int parser = P <fun>
+val integer : int parser = P <fun>
+val symbol : string -> string parser = <fun>
+val wrapped : (unit -> 'a parser) -> 'a parser = <fun>
+val locationP : loc parser = P <fun>
+val symEq : string parser = P <fun>
+val symPlus : string parser = P <fun>
+val symAt : string parser = P <fun>
+val symNot : string parser = P <fun>
+val numP : expression parser = P <fun>
+val derefP : expression parser = P <fun>
+val notP : (unit -> expression parser) -> expression parser = <fun>
+val eqP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val plusP : (unit -> expression parser) -> expression -> expression parser =
+  <fun>
+val expressionP : expression parser = P <fun>
+val symSemi : string parser = P <fun>
+val symAssign : string parser = P <fun>
+val symIf : string parser = P <fun>
+val symThen : string parser = P <fun>
+val symElse : string parser = P <fun>
+val symFi : string parser = P <fun>
+val symWhile : string parser = P <fun>
+val symDo : string parser = P <fun>
+val symOd : string parser = P <fun>
+val symCall : string parser = P <fun>
+val assignP : command parser = P <fun>
+val ifthenelseP : (unit -> command parser) -> command parser = <fun>
+val whileP : (unit -> command parser) -> command parser = <fun>
+val skipP : command parser = P <fun>
+val seqP :
+  (unit -> command parser) -> (unit -> command parser) -> command parser =
+  <fun>
+val commandP : command parser = P <fun>
+# let test f  p = 
+    f (analyze commandP p);;
+  val test : (command -> 'a) -> string -> 'a = <fun>
+# let test_exp_refs e = exp_refs (analyze expressionP e);;
+val test_exp_refs : string -> loc list = <fun>
+# test_exp_refs "@loc2 = 1";;
+- : loc list = [Loc 2]
+# test_exp_refs "(1 = 1) = ~(2 = 2)";;
+- : loc list = []
+# test_exp_refs "(1 = @loc1) = ~(2 = @loc2)";;
+- : loc list = [Loc 1; Loc 2]
+# test_exp_refs "@loc1 = @loc2";;
+- : loc list = [Loc 1; Loc 2]
+# test_exp_refs "@loc3 = @loc1";;
+- : loc list = [Loc 3; Loc 1]
+# test_exp_refs "@loc3 + @loc1";;
+- : loc list = [Loc 3; Loc 1]
+# test_exp_refs "@loc3 + 1";;
+- : loc list = [Loc 3]
+# test active_locs "loc1 := @loc1";;
+- : loc list = [Loc 1]
+# test active_locs "loc1 := @loc2";;
+- : loc list = [Loc 1]
+# test active_locs "loc1 := (-2); while ~(@loc1 = 1) do loc1:= @loc2 + 1 od";;
+- : loc list = [Loc 1; Loc 1]
+# test active_locs "loc1 := (-2); while ~(@loc1 = 1) do loc1:= @loc2 + 1; loc2 := @loc1 od";;
+- : loc list = [Loc 1; Loc 1; Loc 2]
+# test active_locs "if @loc1 = @loc2 then loc3 := @loc2 + 1 else loc4 := @loc 1 + 1 fi";;
+- : loc list = [Loc 3; Loc 4]
+# test loops_analysis "loc1 := @loc1";;
+- : report = Good
+# test loops_analysis "while (@loc1 = 0) do loc1 := @loc1 + 1 od";;
+- : report = Good
+# test loops_analysis "while (@loc2 = 0) do loc1 := @loc1 + 1 od";;
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+# test loops_analysis "while (@loc2 = 0) do loc1 := @loc1 + 1 od; while (@loc2 = 1) do loc2 := 1 od";;
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+# test loops_analysis "while (@loc2 = 0) do loc1 := @loc1 + 1 od; while (@loc2 = 1) do loc1 := 1 od";;
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)));
+  While (Eq (Deref (Loc 2), N 1), Assign (Loc 1, N 1))]
+# test loops_analysis "if (0=0) then while (@loc1 = 0) do loc1 := @loc1 + 1 od else skip fi";;
+- : report = Good
+# test loops_analysis "if (0=0) then skip else while (@loc1 = 0) do loc1 := @loc1 + 1 od  fi";;
+- : report = Good
+# test loops_analysis "if (0=0) then while (@loc2 = 0) do loc1 := @loc1 + 1 od else skip fi";;
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+# test loops_analysis "if (0=0) then skip else while (@loc2 = 0) do loc1 := @loc1 + 1 od fi";;
+- : report =
+Possible
+ [While (Eq (Deref (Loc 2), N 0), Assign (Loc 1, Add (Deref (Loc 1), N 1)))]
+# 
