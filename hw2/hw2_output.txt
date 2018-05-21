@@ -1,0 +1,21 @@
+//Josh Sloan
+//HW2 output from Terminal
+
+Last login: Tue Feb 13 14:50:13 on ttys000
+Joshs-MacBook-Pro:~ Josh$ cd Desktop/COSC4780
+Joshs-MacBook-Pro:COSC4780 Josh$ ocaml "hw2h.ml"
+z[x:= y]  =   z
+
+x[x:= y]  =   y
+
+(x y)[x:= z]  =   (z y)
+
+x[x:= (lambda x. y)]  =   (lambda x. y)
+
+(lambda x. y)[y:= z]  =   (lambda x. z)
+
+(lambda y. x)[x:= y]  =   (lambda z. y)
+
+(lambda y. (y x))[x:= y]  =   (lambda z. (z y))
+
+Joshs-MacBook-Pro:COSC4780 Josh$
