@@ -1,0 +1,86 @@
+Last login: Wed Apr  4 15:10:00 on ttys000
+joshs-mbp:~ Josh$ cd Desktop/COSC4780/hw8
+joshs-mbp:hw8 Josh$ ls
+hw8i.ml		hw8i_test.ml
+joshs-mbp:hw8 Josh$ ocaml
+        OCaml version 4.06.0
+
+# #use "hw8i_test.ml";;
+val update : 'a * 'b -> ('a -> 'b) -> 'a -> 'b = <fun>
+val map : ('a -> 'b) -> 'a list -> 'b list = <fun>
+val member : 'a -> 'a list -> bool = <fun>
+val disjoint : 'a list -> 'a list -> bool = <fun>
+val disjoint_union : 'a list -> 'a list -> 'a list = <fun>
+type loc = Loc of int
+val well_typed_loc : loc -> bool = <fun>
+val string_of_loc : loc -> string = <fun>
+type expression =
+    Num of int
+  | Deref of loc
+  | Plus of expression * expression
+  | Not of expression
+  | Eq of expression * expression
+  | Id of string
+val string_of_expression : expression -> string = <fun>
+type command =
+    Assign of loc * expression
+  | Seq of command * command
+  | Ite of expression * command * command
+  | While of expression * command
+  | Skip
+val string_of_command : command -> string = <fun>
+type declaration =
+    Fun of string * expression
+  | Comma of declaration * declaration
+  | Semi of declaration * declaration
+val string_of_declaration : declaration -> string = <fun>
+type program = Prog of declaration * command
+val string_of_program : program -> string = <fun>
+type expression_types = Boolexp | Intexp
+val string_of_expression_types : expression_types -> string = <fun>
+exception TypeError of expression
+type type_assignment = TA of (string * expression_types) list
+val update_ta :
+  string * expression_types -> type_assignment -> type_assignment = <fun>
+val type_of_id : type_assignment -> string -> expression_types = <fun>
+val ta_names : type_assignment -> string list = <fun>
+val union_ta : type_assignment -> type_assignment -> type_assignment = <fun>
+val pi0 : type_assignment = TA []
+val print_ta : type_assignment -> unit = <fun>
+val expression_type : expression -> type_assignment -> expression_types =
+  <fun>
+val well_typed_expression : expression -> type_assignment -> bool = <fun>
+val declaration_type : declaration -> type_assignment -> type_assignment =
+  <fun>
+val well_typed_declaration : declaration -> type_assignment -> bool = <fun>
+val well_typed_command : command -> type_assignment -> bool = <fun>
+val well_typed_program : program -> bool = <fun>
+val test_decl : declaration -> type_assignment -> unit = <fun>
+val test_prog : program -> unit = <fun>
+Fun X = Eq  (Num 0, Num 0)  -->  {X:Boolexp}
+- : unit = ()
+Fun X = Not Eq  (Num 0, Num 0)  -->  {X:Boolexp}
+- : unit = ()
+Fun X = Num 0  -->  {X:Intexp}
+- : unit = ()
+Fun X = Num 0, Fun Y = Id Z  -->  Exception: Failure "no such type assignment: Z".
+# test_decl (Comma(Fun("X",Num 0),Fun ("Y", Id "X"))) pi0;;
+Fun X = Num 0, Fun Y = Id X  -->  Exception: Failure "no such type assignment: X".
+# test_decl (Comma(Fun("X",Num 0),Fun ("Y", Eq(Num 0, Num 0 )))) pi0;;
+Fun X = Num 0, Fun Y = Eq  (Num 0, Num 0)  -->  {X:Intexp, Y:Boolexp}
+- : unit = ()
+# test_decl (Semi(Fun("X",Num 0),Fun ("Y", Id "X"))) pi0;;
+Fun X = Num 0; Fun Y = Id X  -->  {X:Intexp, Y:Intexp}
+- : unit = ()
+# test_prog (Prog(Fun ("False",Eq (Num 0, Num 1)), Ite (Id "False", Assign (Loc 1, Num 1), Assign (Loc 2, Num 2))));;
+Fun False = Eq  (Num 0, Num 1) in Ite (Id False, Assign (Loc 1, Num 1), Assign (Loc 2, Num 2))is well-typed.
+- : unit = ()
+# test_prog (Prog(Fun ("False",Eq (Num 0, Num 1)), Ite (Id "True", Assign (Loc 1, Num 1), Assign (Loc 2, Num 2))));;
+Fun False = Eq  (Num 0, Num 1) in Ite (Id True, Assign (Loc 1, Num 1), Assign (Loc 2, Num 2))Exception: Failure "no such type assignment: True".
+# test_prog (Prog(Comma(Fun ("True",Eq (Num 0, Num 0)),Fun ("X", Num 42)), Ite (Id "True", Assign (Loc 1, Id "X"), Assign (Loc 2, Num 2))));;
+Fun True = Eq  (Num 0, Num 0), Fun X = Num 42 in Ite (Id True, Assign (Loc 1, Id X), Assign (Loc 2, Num 2))is well-typed.
+- : unit = ()
+# test_prog (Prog(Comma(Fun ("True",Eq (Num 0, Num 0)),Fun ("X", Num 42)), Ite (Id "True", Assign (Loc 1, Id "True"), Assign (Loc 2, Num 2))));;
+Fun True = Eq  (Num 0, Num 0), Fun X = Num 42 in Ite (Id True, Assign (Loc 1, Id True), Assign (Loc 2, Num 2))is not well-typed.
+- : unit = ()
+# 
